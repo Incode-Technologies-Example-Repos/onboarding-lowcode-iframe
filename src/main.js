@@ -1,7 +1,8 @@
-import { fetchOnboardingStatus, fetchScore, fetchOnboardingUrl } from './onboarding';
+import { fakeBackendStart, fakeBackendUrl, fakeBackendStatus, fakeBackendScore  } from './fake_backend';
 
 const createIframe = (url) => {
   const app = document.getElementById('app');
+  app.innerHTML = "";
   // Dynamically create the iframe
   const frame = document.createElement('iframe');
   frame.src = url;
@@ -18,33 +19,29 @@ const createIframe = (url) => {
 async function app() {
   const app = document.getElementById('app');
   try {
-    const {url, interviewId, token} = await fetchOnboardingUrl();
-    app.innerHTML = "";
+    const {token} = await fakeBackendStart();
+    const {url} = await fakeBackendUrl(token);
+  
+    createIframe(url);
     
-    if (url) {
-      createIframe(url);
-    }
-
     const interval = setInterval(async () => {
-      const onboarding = await fetchOnboardingStatus(interviewId);
-      if (onboarding.success===true && onboarding.onboardingStatus==='ONBOARDING_FINISHED'){
+
+      try {
+        const {onboardingStatus} = await fakeBackendStatus(token);
+        if (onboardingStatus==='ONBOARDING_FINISHED'){
+          clearInterval(interval);
+          
+          // Remove iframe from the parent node
+          const frame = document.getElementById('app-frame');
+          frame.parentNode.removeChild(frame);
+          const {overallStatus} = await fakeBackendScore(token);
+          app.innerHTML =`<h1>Onboarding finished with overall status: ${overallStatus}</h1>`;
+        }
+      } catch(e){
         clearInterval(interval);
-        
-        // Remove iframe from the parent node
-        const frame = document.getElementById('app-frame');
-        frame.parentNode.removeChild(frame);
-        
-        const score = await fetchScore(interviewId, token);
-        if (score.success) {
-          app.innerHTML =`<h1>Onboarding finished with score: ${score.score}</h1>`;
-        } else {
-          app.innerHTML =`<h1>There was an error: ${score.error}</h1>`;
-        } 
-      } else if (onboarding.success===false) {
-        clearInterval(interval);
-        app.innerHTML =`<h1>There was an error: ${onboarding.error}</h1>`;
+        app.innerHTML =`<h1>There was an error: ${e.message}</h1>`;
       }
-    }, 100000);
+    }, 1000);
   } catch(e) {
     app.innerHTML =`<h1>There was an error: ${e.message}</h1>`;
   } 

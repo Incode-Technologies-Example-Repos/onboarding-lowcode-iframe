@@ -12,7 +12,7 @@ sequenceDiagram
     activate m
     m-->>b: Get Onboarding URL
     note over b: runs /omni/start,<br>/omni/onboarding-url
-    b-->>m: {url, interviewId}
+    b-->>m: {url, token}
     note over m: Create Iframe with URL
     m->>i: Onboarding starts in backend
     
@@ -23,7 +23,7 @@ sequenceDiagram
         deactivate i
     and
         loop
-            m-->>b: {interviewId}
+            m-->>b: {token}
             note over b: Fetch Onboarding Status
             b-->>m: {onboardingStatus}
             note over m: If ONBOARDING_FINISHED then<br>continue
@@ -31,25 +31,23 @@ sequenceDiagram
     end
     
     note over m: Destroy Iframe
-    m-->>b: Fetch Score<br>{interviewId}
+    m-->>b: Fetch Score<br>{token}
     note over b: Fetch Score
     
-    b-->>m: {scores}
+    b-->>m: {overallStatus}
     note over m: Done
     deactivate m
 ```
 
-# Backend Server
-A backend server that will generate the url is needed for this sample,
-luckily for you we already have sample server for PHP, NodeJS, Python,
-PHP and Java and .NET, please reffer to our documentation on subject:
-[Quick Start Sample Server](https://developer.incode.com/docs/quick-start-servers)
+# Fake Backend Server
+Starting the session, getting the status and fetching the scores must be
+done in the backend, to simplify development this sample includes a
+fake_backend.js file that does this in the frontend.
 
-In order to simplfy development, this repo is configured to reverse
-proxy a local backend server (`http://localhost:3000`) in the `/api`
-url like `https://<your-ip>:5173/api`, if you want to point your
-frontend development to a backend server deployed elsewhere, change
-the VITE_TOKEN_SERVER_URL to the full url of such server.
+Please be advised to replace this with a proper backend for your
+production runs.
+
+The APIKEY should never be exposed in the frontend.
 
 # Install
 First install all the required packages
@@ -58,12 +56,13 @@ npm install
 ```
 
 # Configure
-Copy `.env.example` as `.env` and configure it to point to a remote
-server, or leave it as /api to point to the reverse proxied server
-running in your local machine
+Copy `.env.example` as `.env` and configure it with the values of your flow
 
 ```
-VITE_TOKEN_SERVER_URL=/api
+# HERE ONLY FOR DEMO PURPOSES, THE APIKEY AND THE FLOW_ID SHOULD NEVER BE IN THE FRONTEND.
+VITE_FAKE_BACKEND_APIURL=https://demo-api.incodesmile.com
+VITE_FAKE_BACKEND_APIKEY=
+VITE_FAKE_BACKEND_FLOWID=
 ```
 
 # Development
@@ -75,13 +74,6 @@ npm run dev
 You will get a hot reloading environment that exposes the page in
 localhost and in the ip of the machine in case you want to try it
 in your cellphone.
-
-# Polling Schema
-For a proper execution of this project, it is necessary to define
-the ADMIN_TOKEN in the .env files of your backend project.
-
-The admin token will be used during the /onboarding-status endpoint call 
-to check whether a session is finished or not and consequently fetch its score.
 
 # Author
 
