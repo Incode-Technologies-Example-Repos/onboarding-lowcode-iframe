@@ -33,7 +33,6 @@ sequenceDiagram
     note over m: Destroy Iframe
     m-->>b: Fetch Score<br>{token}
     note over b: Fetch Score
-    
     b-->>m: {overallStatus}
     note over m: Done
     deactivate m
