@@ -97,4 +97,4 @@ const fakeBackendScore = async function(token) {
     return {overallStatus}
 }
 
-export {fakeBackendUrl, fakeBackendStatus, fakeBackendScore};
+export {fakeBackendStart, fakeBackendUrl, fakeBackendStatus, fakeBackendScore};
