@@ -10,7 +10,7 @@ const createIframe = (url) => {
   // Dynamically create the iframe
   const frame = document.createElement("iframe");
   frame.src = url;
-  frame.class = "onboarding-view";
+  frame.className = "onboarding-view";
   frame.id = "app-frame";
   frame.width = "100%";
   frame.height = "100%";
