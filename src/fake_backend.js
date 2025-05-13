@@ -120,18 +120,18 @@ const fakeBackendScore = async function (interviewId) {
 // Save the token in local storage, this simulates a db where
 // we save the token related to the interviewId
 const saveToken = function (interviewId, token) {
-    const sessionRaw = localStorage.getItem('sessions');
-    const sessions = sessionRaw ? JSON.parse(sessionRaw) : {};
-    sessions[interviewId] = token;
-    localStorage.setItem('sessions', JSON.stringify(sessions));
-}
+  const sessionRaw = localStorage.getItem("sessions");
+  const sessions = sessionRaw ? JSON.parse(sessionRaw) : {};
+  sessions[interviewId] = token;
+  localStorage.setItem("sessions", JSON.stringify(sessions));
+};
 
 // Get the token from local storage, this simulates a db where
 // we save the token related to the interviewId
 const getToken = function (interviewId) {
-    const sessionRaw = localStorage.getItem('sessions');
-    const sessions = sessionRaw ? JSON.parse(sessionRaw) : {};
-    return sessions[interviewId];
-}
+  const sessionRaw = localStorage.getItem("sessions");
+  const sessions = sessionRaw ? JSON.parse(sessionRaw) : {};
+  return sessions[interviewId];
+};
 
 export { fakeBackendStartOnboarding, fakeBackendStatus, fakeBackendScore };
