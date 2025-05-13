@@ -1,4 +1,4 @@
-import { fakeBackendStart, fakeBackendUrl, fakeBackendStatus, fakeBackendScore  } from './fake_backend';
+import { fakeBackendStartOnboarding, fakeBackendStatus, fakeBackendScore  } from './fake_backend';
 
 const createIframe = (url) => {
   const app = document.getElementById('app');
@@ -19,22 +19,21 @@ const createIframe = (url) => {
 async function app() {
   const app = document.getElementById('app');
   try {
-    const {token} = await fakeBackendStart();
-    const {url} = await fakeBackendUrl(token);
-  
+    const {url, interviewId} = await fakeBackendStartOnboarding();
+      
     createIframe(url);
     
     const interval = setInterval(async () => {
 
       try {
-        const {onboardingStatus} = await fakeBackendStatus(token);
+        const {onboardingStatus} = await fakeBackendStatus(interviewId);
         if (onboardingStatus==='ONBOARDING_FINISHED'){
           clearInterval(interval);
           
           // Remove iframe from the parent node
           const frame = document.getElementById('app-frame');
           frame.parentNode.removeChild(frame);
-          const {overallStatus} = await fakeBackendScore(token);
+          const {overallStatus} = await fakeBackendScore(interviewId);
           app.innerHTML =`<h1>Onboarding finished with overall status: ${overallStatus}</h1>`;
         }
       } catch(e){
