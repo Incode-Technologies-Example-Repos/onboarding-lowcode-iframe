@@ -16,7 +16,7 @@ const createIframe = (url) => {
   frame.height = "100%";
   frame.allowUserMedia = true;
   frame.setAttribute("frameborder", "0");
-  frame.setAttribute("allow", "geolocation; microphone; camera;");
+  frame.setAttribute("allow", "geolocation; microphone; camera; accelerometer; gyroscope;");
   app.appendChild(frame);
 };
 
